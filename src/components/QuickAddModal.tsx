@@ -49,7 +49,8 @@ export default function QuickAddModal() {
         .insert({ name: name.trim(), phone: phone.trim() || null, status, service_date: serviceDate })
         .select()
         .single()
-      if (err) throw err
+      if (err) throw new Error(`Supabase: ${err.message} (code: ${err.code})`)
+      if (!customer) throw new Error('Cliente não retornado pelo banco')
 
       if (sku.trim() && customer) {
         await supabase.from('customer_skus').insert({
@@ -66,7 +67,8 @@ export default function QuickAddModal() {
         router.push(`/customers/${customer.id}`)
       }, 900)
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao salvar')
+      const msg = e instanceof Error ? e.message : JSON.stringify(e)
+      setError(msg)
     } finally {
       setSaving(false)
     }
