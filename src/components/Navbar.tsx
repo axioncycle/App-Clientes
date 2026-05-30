@@ -9,6 +9,7 @@ const navLinks = [
   { href: '/customers', label: 'Clientes', icon: '👥' },
   { href: '/calendar', label: 'Agenda', icon: '📅' },
   { href: '/follow-ups', label: 'Follow-ups', icon: '🔔' },
+  { href: '/importar', label: 'Importar', icon: '📥' },
   { href: '/integracao-whatsapp', label: 'WhatsApp API', icon: '💬' },
 ]
 
