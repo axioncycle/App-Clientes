@@ -23,7 +23,28 @@ export default function CalendarPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
-  const [showImportModal, setShowImportModal] = useState(false)
+
+  const importFromContacts = async () => {
+    if (!('contacts' in navigator && 'ContactsManager' in window)) {
+      alert('Seu navegador não suporta importação de contatos. Use Chrome no Android ou Safari no iOS.')
+      return
+    }
+    try {
+      const contacts = await (navigator as any).contacts.select(['name', 'tel', 'email'], { multiple: true })
+      if (contacts.length === 1) {
+        const c = contacts[0]
+        const name = c.name?.[0] || ''
+        const phone = c.tel?.[0] || ''
+        const email = c.email?.[0] || ''
+        window.location.href = `/customers/new?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}`
+      } else if (contacts.length > 1) {
+        sessionStorage.setItem('importedContacts', JSON.stringify(contacts))
+        window.location.href = '/customers/new?fromContacts=true'
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   useEffect(() => {
     async function fetch() {
@@ -60,7 +81,7 @@ export default function CalendarPage() {
           <p className="text-slate-400 text-sm mt-1">Atendimentos por data de serviço</p>
         </div>
         <button
-          onClick={() => setShowImportModal(true)}
+          onClick={importFromContacts}
           className="btn-secondary flex items-center gap-2 self-start"
         >
           <span>📲</span> Importar da Agenda
@@ -229,77 +250,6 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Import modal */}
-      {showImportModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-white">📲 Importar da Agenda</h2>
-              <button
-                onClick={() => setShowImportModal(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700 transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            <p className="text-slate-400 text-sm mb-5">
-              Você pode importar contatos e agendamentos de:
-            </p>
-
-            <div className="space-y-3">
-              <div className="p-4 bg-slate-700/50 rounded-xl border border-slate-600">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">📆</span>
-                  <p className="font-semibold text-white">Google Agenda</p>
-                </div>
-                <p className="text-slate-400 text-xs leading-relaxed">
-                  Acesse <strong className="text-slate-300">Google Calendar → Configurações → Exportar</strong> e
-                  importe o arquivo .ics. Em breve, este app terá integração direta via OAuth.
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-700/50 rounded-xl border border-slate-600">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">📱</span>
-                  <p className="font-semibold text-white">Contatos do celular</p>
-                </div>
-                <p className="text-slate-400 text-xs leading-relaxed">
-                  No seu celular, exporte os contatos em formato <strong className="text-slate-300">.vcf</strong> e
-                  compartilhe com o app. A integração com Android e iOS está prevista para a próxima versão.
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-700/50 rounded-xl border border-slate-600">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl">💡</span>
-                  <p className="font-semibold text-white">Por enquanto...</p>
-                </div>
-                <p className="text-slate-400 text-xs leading-relaxed">
-                  Cadastre seus clientes manualmente clicando em <strong className="text-slate-300">&quot;Novo Cliente&quot;</strong>.
-                  Você pode registrar o telefone, e-mail e data de atendimento diretamente no formulário.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowImportModal(false)}
-                className="btn-secondary flex-1"
-              >
-                Fechar
-              </button>
-              <Link
-                href="/customers/new"
-                onClick={() => setShowImportModal(false)}
-                className="btn-primary flex-1 text-center"
-              >
-                Novo Cliente
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

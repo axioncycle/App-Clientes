@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { Customer, CustomerSKU, CustomerFormData, SKUFormItem } from '@/lib/types'
 import SKUList from './SKUList'
@@ -24,6 +24,7 @@ const emptyForm = (): CustomerFormData => ({
 
 export default function CustomerForm({ customer, mode }: CustomerFormProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -50,6 +51,40 @@ export default function CustomerForm({ customer, mode }: CustomerFormProps) {
     : emptyForm()
 
   const [form, setForm] = useState<CustomerFormData>(initialForm)
+
+  useEffect(() => {
+    if (mode !== 'create') return
+    const fromContacts = searchParams.get('fromContacts')
+    const nameParam = searchParams.get('name')
+    const phoneParam = searchParams.get('phone')
+    const emailParam = searchParams.get('email')
+
+    if (fromContacts === 'true') {
+      try {
+        const stored = sessionStorage.getItem('importedContacts')
+        if (stored) {
+          const contacts = JSON.parse(stored)
+          if (contacts.length > 0) {
+            const first = contacts[0]
+            setForm((prev) => ({
+              ...prev,
+              name: first.name?.[0] || prev.name,
+              phone: first.tel?.[0] || prev.phone,
+              email: first.email?.[0] || prev.email,
+            }))
+          }
+        }
+      } catch {}
+    } else if (nameParam || phoneParam || emailParam) {
+      setForm((prev) => ({
+        ...prev,
+        name: nameParam || prev.name,
+        phone: phoneParam || prev.phone,
+        email: emailParam || prev.email,
+      }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const updateField = <K extends keyof CustomerFormData>(key: K, value: CustomerFormData[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }))
