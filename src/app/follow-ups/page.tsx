@@ -65,7 +65,7 @@ export default function FollowUpsPage() {
         notes: noteMap[customerId]?.trim() || null,
       })
       setNoteMap((prev) => ({ ...prev, [customerId]: '' }))
-      setSuccessIds((prev) => new Set([...prev, customerId]))
+      setSuccessIds((prev) => new Set(Array.from(prev).concat(customerId)))
       setTimeout(() => {
         setSuccessIds((prev) => {
           const next = new Set(prev)
