@@ -49,7 +49,12 @@ export default function TagsPage() {
 
       setTags((tagsData ?? []).map((t: Tag) => ({ ...t, count: counts[t.id] ?? 0 })))
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao carregar tags')
+      const msg = e instanceof Error ? e.message : String(e)
+      if (msg.includes('does not exist') || msg.includes('42P01')) {
+        setError('MIGRATION_NEEDED')
+      } else {
+        setError(msg)
+      }
     } finally {
       setLoading(false)
     }
@@ -73,7 +78,8 @@ export default function TagsPage() {
       setNewColor('#1a8cff')
       await fetchTags()
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao criar tag')
+      const msg = e instanceof Error ? e.message : String(e)
+      setError(msg.includes('does not exist') || msg.includes('42P01') ? 'MIGRATION_NEEDED' : msg)
     } finally {
       setSaving(false)
     }
@@ -150,7 +156,30 @@ export default function TagsPage() {
               </span>
             </div>
           </div>
-          {error && (
+          {error === 'MIGRATION_NEEDED' && (
+            <div className="rounded-xl p-4 space-y-3" style={{ backgroundColor: 'color-mix(in srgb, #f59e0b 10%, transparent)', border: '1px solid #f59e0b55' }}>
+              <p className="text-amber-400 font-bold text-sm">⚠️ Tabelas não encontradas no banco</p>
+              <p className="text-amber-300 text-xs">Execute o SQL abaixo no <strong>SQL Editor</strong> do Supabase:</p>
+              <pre className="text-xs rounded-lg p-3 overflow-x-auto" style={{ backgroundColor: 'var(--bg)', color: 'var(--text)' }}>{`alter table customers add column if not exists pipeline_stage text not null default 'primeiro_contato';
+
+create table if not exists tags (
+  id uuid default gen_random_uuid() primary key,
+  name text not null unique,
+  color text not null default '#1a8cff',
+  created_at timestamptz default now()
+);
+
+create table if not exists customer_tags (
+  customer_id uuid references customers(id) on delete cascade,
+  tag_id uuid references tags(id) on delete cascade,
+  primary key (customer_id, tag_id)
+);
+
+alter table tags disable row level security;
+alter table customer_tags disable row level security;`}</pre>
+            </div>
+          )}
+          {error && error !== 'MIGRATION_NEEDED' && (
             <p className="text-red-400 text-sm">{error}</p>
           )}
           <button

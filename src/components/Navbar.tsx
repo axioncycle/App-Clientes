@@ -10,7 +10,6 @@ const navLinks = [
   { href: '/funil',      label: 'FUNIL',     icon: '🎯' },
   { href: '/importar',   label: 'IMPORTAR',  icon: '📥' },
   { href: '/follow-ups', label: 'FOLLOW-UP', icon: '🔔' },
-  { href: '/calendar',   label: 'AGENDA',    icon: '📅' },
   { href: '/tags',       label: 'TAGS',      icon: '🏷️' },
   { href: '/exportar',   label: 'EXPORTAR',  icon: '📤' },
 ]
