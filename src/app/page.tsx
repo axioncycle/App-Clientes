@@ -185,38 +185,20 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Quick links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link
-          href="/customers"
-          className="card hover:border-blue-600 transition-colors flex items-center gap-4 group"
-        >
-          <span className="text-3xl">👥</span>
+      {/* Tools */}
+      <div className="grid grid-cols-2 gap-4">
+        <Link href="/importar" className="card hover:border-[#1a8cff] transition-colors flex items-center gap-4 group">
+          <span className="text-3xl">📥</span>
           <div>
-            <p className="font-semibold text-white group-hover:text-blue-300 transition-colors">
-              Lista de Clientes
-            </p>
-            <p className="text-slate-400 text-sm">Filtrar e buscar clientes</p>
+            <p className="font-semibold group-hover:text-[#1a8cff] transition-colors" style={{ color: 'var(--text)' }}>Importar</p>
+            <p className="text-sm" style={{ color: 'var(--text2)' }}>Importar da agenda</p>
           </div>
         </Link>
-        <Link
-          href="/calendar"
-          className="card hover:border-blue-600 transition-colors flex items-center gap-4 group"
-        >
-          <span className="text-3xl">📅</span>
+        <Link href="/exportar" className="card hover:border-[#1a8cff] transition-colors flex items-center gap-4 group">
+          <span className="text-3xl">📤</span>
           <div>
-            <p className="font-semibold text-white group-hover:text-blue-300 transition-colors">Agenda</p>
-            <p className="text-slate-400 text-sm">Atendimentos por data</p>
-          </div>
-        </Link>
-        <Link
-          href="/follow-ups"
-          className="card hover:border-blue-600 transition-colors flex items-center gap-4 group"
-        >
-          <span className="text-3xl">🔔</span>
-          <div>
-            <p className="font-semibold text-white group-hover:text-blue-300 transition-colors">Follow-ups</p>
-            <p className="text-slate-400 text-sm">Lembretes de contato</p>
+            <p className="font-semibold group-hover:text-[#1a8cff] transition-colors" style={{ color: 'var(--text)' }}>Exportar</p>
+            <p className="text-sm" style={{ color: 'var(--text2)' }}>Excel, CSV ou PDF</p>
           </div>
         </Link>
       </div>

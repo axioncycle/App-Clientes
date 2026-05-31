@@ -8,10 +8,8 @@ const navLinks = [
   { href: '/',           label: 'DASHBOARD', icon: '📊' },
   { href: '/customers',  label: 'CLIENTES',  icon: '👥' },
   { href: '/funil',      label: 'FUNIL',     icon: '🎯' },
-  { href: '/importar',   label: 'IMPORTAR',  icon: '📥' },
   { href: '/follow-ups', label: 'FOLLOW-UP', icon: '🔔' },
   { href: '/tags',       label: 'TAGS',      icon: '🏷️' },
-  { href: '/exportar',   label: 'EXPORTAR',  icon: '📤' },
 ]
 
 export default function Navbar() {
@@ -68,22 +66,22 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Tab bar — always visible, horizontal scroll on mobile */}
-      <div className="border-t overflow-x-auto scrollbar-hide" style={{ borderColor: 'var(--border)' }}>
-        <div className="flex">
+      {/* Tab bar — fixed, fills full width equally */}
+      <div className="border-t" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex w-full">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex flex-col items-center gap-0.5 px-4 py-2 text-[10px] font-bold tracking-widest transition-all border-b-2 whitespace-nowrap flex-shrink-0 ${
+                className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[9px] font-bold tracking-wider transition-all border-b-2 ${
                   isActive
                     ? 'border-[#1a8cff] text-[#1a8cff]'
                     : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
               >
-                <span className="text-base">{link.icon}</span>
+                <span className="text-sm">{link.icon}</span>
                 {link.label}
               </Link>
             )
