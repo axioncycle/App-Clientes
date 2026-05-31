@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { format } from 'date-fns'
+import { searchSKU, SKUItem } from '@/lib/skuCatalog'
 
 const today = () => format(new Date(), 'yyyy-MM-dd')
 
@@ -17,6 +18,9 @@ export default function QuickAddModal() {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [sku, setSku] = useState('')
+  const [skuResults, setSkuResults] = useState<SKUItem[]>([])
+  const [skuOpen, setSkuOpen] = useState(false)
+  const skuRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<'interested' | 'purchased'>('interested')
   const [serviceDate, setServiceDate] = useState(today())
 
@@ -32,12 +36,23 @@ export default function QuickAddModal() {
     }
   }, [open])
 
-  // close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [])
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (skuRef.current && !skuRef.current.contains(e.target as Node)) setSkuOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const handleSkuChange = (v: string) => {
+    setSku(v)
+    setSkuResults(searchSKU(v))
+    setSkuOpen(!!v.trim())
+  }
 
   const handleSave = async () => {
     if (!name.trim()) { setError('Nome é obrigatório'); return }
@@ -154,15 +169,31 @@ export default function QuickAddModal() {
               </div>
 
               {/* SKU */}
-              <div>
-                <label className="block text-xs text-slate-400 mb-1">SKU / Produto</label>
+              <div ref={skuRef} className="relative">
+                <label className="block text-xs text-gray-400 mb-1">SKU / Produto</label>
                 <input
                   type="text"
                   value={sku}
-                  onChange={(e) => setSku(e.target.value)}
-                  placeholder="Ex: BIKE-001"
-                  className="input w-full text-base font-mono"
+                  onChange={(e) => handleSkuChange(e.target.value)}
+                  onFocus={() => sku.trim() && setSkuOpen(true)}
+                  placeholder="Digite para buscar produto..."
+                  className="input w-full text-base"
                 />
+                {skuOpen && skuResults.length > 0 && (
+                  <div className="absolute z-50 left-0 right-0 top-full mt-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto">
+                    {skuResults.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => { setSku(item.name); setSkuOpen(false) }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#252525] text-left transition-colors"
+                      >
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#1a8cff]/20 text-[#1a8cff] flex-shrink-0">{item.category}</span>
+                        <span className="text-sm text-white truncate">{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Data de atendimento */}
