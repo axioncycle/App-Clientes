@@ -218,7 +218,13 @@ export default function CustomersPage() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filtered.map((c) => (
-              <CustomerCard key={c.id} customer={c} />
+              <CustomerCard
+                key={c.id}
+                customer={c}
+                onDelete={(id) => {
+                  setCustomers(prev => prev.filter(x => x.id !== id))
+                }}
+              />
             ))}
           </div>
         </>

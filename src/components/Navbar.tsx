@@ -46,7 +46,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2 flex-shrink-0">
           <ThemeToggle />
           <button
-            onClick={() => router.refresh()}
+            onClick={() => window.location.reload()}
             className="w-9 h-9 rounded-xl border flex items-center justify-center transition-all"
             style={{ backgroundColor: 'var(--bg3)', borderColor: 'var(--border2)', color: 'var(--text2)' }}
             title="Atualizar"

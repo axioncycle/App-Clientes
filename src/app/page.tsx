@@ -117,6 +117,28 @@ export default function Dashboard() {
         <StatsCard title="Atendimentos Hoje" value={stats.servicesToday} icon="📅" color="purple" />
       </div>
 
+      {/* Conversion */}
+      {stats.totalCustomers > 0 && (
+        <div className="card">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text2)' }}>Taxa de Conversão</span>
+            <span className="text-lg font-black" style={{ color: 'var(--blue)' }}>
+              {((stats.purchased / stats.totalCustomers) * 100).toFixed(1)}%
+            </span>
+          </div>
+          <div className="w-full rounded-full h-2.5 overflow-hidden" style={{ backgroundColor: 'var(--bg3)' }}>
+            <div
+              className="h-2.5 rounded-full transition-all duration-700"
+              style={{ width: `${(stats.purchased / stats.totalCustomers) * 100}%`, backgroundColor: 'var(--blue)' }}
+            />
+          </div>
+          <div className="flex justify-between mt-2 text-xs" style={{ color: 'var(--text3)' }}>
+            <span>{stats.purchased} compraram</span>
+            <span>{stats.interested} em aberto</span>
+          </div>
+        </div>
+      )}
+
       {/* Follow-up alerts */}
       {followUpAlerts.length > 0 && (
         <div className="card border-amber-700/50 bg-amber-900/10">

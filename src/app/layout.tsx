@@ -4,6 +4,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import QuickAddModal from '@/components/QuickAddModal'
 import InstallPWA from '@/components/InstallPWA'
+import SwipeNavigation from '@/components/SwipeNavigation'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,9 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body className={`${inter.className} bg-[#0a0a0a] text-white min-h-screen`}>
         <Navbar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          {children}
-        </main>
+        <SwipeNavigation>
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </main>
+        </SwipeNavigation>
         <QuickAddModal />
         <InstallPWA />
       </body>
