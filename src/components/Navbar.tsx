@@ -5,106 +5,86 @@ import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 const navLinks = [
-  { href: '/', label: 'Dashboard', icon: '📊' },
-  { href: '/customers', label: 'Clientes', icon: '👥' },
-  { href: '/calendar', label: 'Agenda', icon: '📅' },
-  { href: '/follow-ups', label: 'Follow-ups', icon: '🔔' },
-  { href: '/importar', label: 'Importar', icon: '📥' },
-  { href: '/integracao-whatsapp', label: 'WhatsApp API', icon: '💬' },
+  { href: '/',          label: 'DASHBOARD', icon: '📊' },
+  { href: '/customers', label: 'CLIENTES',  icon: '👥' },
+  { href: '/importar',  label: 'IMPORTAR',  icon: '📥' },
+  { href: '/follow-ups',label: 'FOLLOW-UP', icon: '🔔' },
+  { href: '/calendar',  label: 'AGENDA',    icon: '📅' },
 ]
 
 export default function Navbar() {
   const pathname = usePathname()
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <nav className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🚲</span>
-            <span className="font-bold text-lg text-white hidden sm:block">Bike Shop</span>
-            <span className="text-slate-400 text-sm hidden sm:block">Clientes</span>
-          </Link>
-
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-blue-800 text-white'
-                      : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                  }`}
-                >
-                  <span>{link.icon}</span>
-                  {link.label}
-                </Link>
-              )
-            })}
+    <nav className="bg-[#111111] border-b border-[#1f1f1f] sticky top-0 z-50">
+      {/* Header row */}
+      <div className="flex items-center justify-between px-4 py-3">
+        {/* Logo + title */}
+        <Link href="/" className="flex items-center gap-3">
+          {/* Logo placeholder — replace public/logo.png to update */}
+          <div className="w-11 h-11 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center overflow-hidden flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="Axion Cycle"
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                const t = e.currentTarget
+                t.style.display = 'none'
+                t.parentElement!.innerHTML = '<span style="font-size:22px">🚲</span>'
+              }}
+            />
           </div>
-
-          {/* New customer button */}
-          <div className="hidden md:block">
-            <Link
-              href="/customers/new"
-              className="btn-accent text-sm flex items-center gap-2"
-            >
-              <span>+</span> Novo Cliente
-            </Link>
+          <div>
+            <p className="font-black text-base text-[#1a8cff] tracking-widest leading-none uppercase">Axion Cycle</p>
+            <p className="text-[10px] text-gray-400 tracking-widest uppercase leading-none mt-0.5">Gestão de Clientes</p>
           </div>
+        </Link>
 
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-slate-300 hover:text-white p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Menu"
+        {/* Right icons */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/customers/new"
+            className="w-9 h-9 rounded-xl bg-[#1a8cff] hover:bg-[#3399ff] flex items-center justify-center text-white font-bold text-xl transition-colors"
+            title="Novo Cliente"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {mobileOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
+            +
+          </Link>
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center text-gray-300"
+          >
+            {menuOpen
+              ? <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+              : <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+            }
           </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden pb-4 space-y-1">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-blue-800 text-white'
-                      : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                  }`}
-                >
-                  <span>{link.icon}</span>
-                  {link.label}
-                </Link>
-              )
-            })}
-            <Link
-              href="/customers/new"
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-semibold bg-amber-500 text-slate-900 mt-2"
-            >
-              <span>+</span> Novo Cliente
-            </Link>
-          </div>
-        )}
+      {/* Tab bar — desktop always visible, mobile only when open */}
+      <div className={`border-t border-[#1f1f1f] overflow-x-auto ${menuOpen ? 'block' : 'hidden md:block'}`}>
+        <div className="flex min-w-max md:min-w-0">
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`flex flex-col items-center gap-1 px-5 py-2.5 text-[10px] font-bold tracking-widest transition-all border-b-2 flex-1 md:flex-none ${
+                  isActive
+                    ? 'border-[#1a8cff] text-[#1a8cff]'
+                    : 'border-transparent text-gray-500 hover:text-gray-300'
+                }`}
+              >
+                <span className="text-lg">{link.icon}</span>
+                {link.label}
+              </Link>
+            )
+          })}
+        </div>
       </div>
     </nav>
   )
