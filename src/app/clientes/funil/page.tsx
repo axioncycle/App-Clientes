@@ -39,16 +39,29 @@ export default function FunilPage() {
   const dragCustomer = useRef<CustomerWithSKUs | null>(null)
 
   useEffect(() => {
-    async function fetch() {
+    async function load() {
       try {
-        const { data, error: err } = await supabase.from('customers').select('*, customer_skus(*)').order('created_at', { ascending: false })
+        const { data, error: err } = await supabase
+          .from('customers')
+          .select('*, customer_skus(*)')
+          .order('created_at', { ascending: false })
         if (err) throw err
-        setCustomers((data ?? []) as CustomerWithSKUs[])
+        // Normalise: ensure every customer has a pipeline stage
+        const rows = (data ?? []) as CustomerWithSKUs[]
+        const needsStage = rows.filter((c) => !c.pipeline_stage)
+        if (needsStage.length > 0) {
+          await supabase
+            .from('customers')
+            .update({ pipeline_stage: 'contato_inicial' })
+            .in('id', needsStage.map((c) => c.id))
+          needsStage.forEach((c) => { c.pipeline_stage = 'contato_inicial' })
+        }
+        setCustomers(rows)
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : 'Erro ao carregar clientes')
       } finally { setLoading(false) }
     }
-    fetch()
+    load()
   }, [])
 
   const handleDragStart = (customer: CustomerWithSKUs) => { dragCustomer.current = customer; setDraggingId(customer.id) }
@@ -66,7 +79,7 @@ export default function FunilPage() {
   if (loading) return (<div className="flex items-center justify-center min-h-64"><svg className="w-10 h-10 text-blue-500 spinner" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg></div>)
   if (error) return (<div className="card border-red-700/50 bg-red-900/20 text-center py-10"><p className="text-red-400">{error}</p></div>)
 
-  const byStage = (stage: PipelineStage) => customers.filter((c) => (c.pipeline_stage ?? 'contato_inicial') === stage)
+  const byStage = (stage: PipelineStage) => customers.filter((c) => (c.pipeline_stage || 'contato_inicial') === stage)
 
   return (
     <div className="space-y-4">

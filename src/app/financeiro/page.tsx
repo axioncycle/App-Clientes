@@ -3,40 +3,43 @@ import Link from 'next/link'
 
 export default function FinanceiroPage() {
   return (
-    <>
-      <style>{`
-        body { margin: 0; overflow: hidden; }
-        #fin-iframe { position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 0; }
-        #ax-back {
-          position: fixed;
-          top: 10px;
-          left: 10px;
-          z-index: 99999;
-          background: #1a8cff;
-          color: #fff;
-          border: none;
-          border-radius: 8px;
-          padding: 7px 13px;
-          font-size: 11px;
-          font-weight: 800;
-          cursor: pointer;
-          letter-spacing: 1px;
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-          font-family: system-ui, sans-serif;
-        }
-        #ax-back:hover { background: #3399ff; }
-      `}</style>
-      <Link id="ax-back" href="/">← MÓDULOS</Link>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden', margin: 0 }}>
+      <style>{`body { margin: 0; overflow: hidden; }`}</style>
+      {/* Thin top bar — matches Clientes navbar style */}
+      <div style={{
+        height: '44px',
+        background: '#050505',
+        borderBottom: '1px solid #1a1a1a',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        flexShrink: 0,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ width: '32px', height: '32px', borderRadius: '10px', background: '#1a1a1a', border: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '2px' }}
+              onError={(e) => { e.currentTarget.style.display = 'none'; const p = e.currentTarget.parentElement; if (p) p.innerHTML = '<span style="font-size:16px">💰</span>'; }} />
+          </div>
+          <div>
+            <p style={{ fontWeight: 900, fontSize: '13px', color: '#1a8cff', letterSpacing: '2px', textTransform: 'uppercase', lineHeight: 1, margin: 0 }}>Axion Cycle</p>
+            <p style={{ fontSize: '9px', color: '#555', letterSpacing: '2px', textTransform: 'uppercase', lineHeight: 1, marginTop: '3px' }}>Financeiro</p>
+          </div>
+        </div>
+        <Link
+          href="/"
+          style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '1px', color: '#555', textDecoration: 'none', padding: '4px 8px', borderRadius: '8px', border: '1px solid transparent' }}
+        >
+          ← MÓDULOS
+        </Link>
+      </div>
       <iframe
-        id="fin-iframe"
         src="/financeiro-app"
         title="Financeiro"
         allow="clipboard-read; clipboard-write"
+        style={{ flex: 1, border: 'none', width: '100%', display: 'block' }}
       />
-    </>
+    </div>
   )
 }
