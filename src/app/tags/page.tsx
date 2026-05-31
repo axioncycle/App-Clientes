@@ -69,33 +69,28 @@ export default function TagsPage() {
     if (!newName.trim()) return
     setSaving(true)
     setError(null)
-    try {
-      const { error: err } = await supabase
-        .from('tags')
-        .insert({ name: newName.trim(), color: newColor })
-      if (err) throw err
+    const { error: err } = await supabase
+      .from('tags')
+      .insert({ name: newName.trim(), color: newColor })
+    if (err) {
+      setError(`${err.message} (${err.code})`)
+    } else {
       setNewName('')
       setNewColor('#1a8cff')
       await fetchTags()
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e)
-      setError(msg.includes('does not exist') || msg.includes('42P01') ? 'MIGRATION_NEEDED' : msg)
-    } finally {
-      setSaving(false)
     }
+    setSaving(false)
   }
 
   const handleDelete = async (id: string) => {
     setDeletingId(id)
-    try {
-      const { error: err } = await supabase.from('tags').delete().eq('id', id)
-      if (err) throw err
+    const { error: err } = await supabase.from('tags').delete().eq('id', id)
+    if (err) {
+      setError(`${err.message} (${err.code})`)
+    } else {
       setTags((prev) => prev.filter((t) => t.id !== id))
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao excluir tag')
-    } finally {
-      setDeletingId(null)
     }
+    setDeletingId(null)
   }
 
   return (
