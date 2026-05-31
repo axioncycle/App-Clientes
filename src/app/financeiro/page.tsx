@@ -3,23 +3,20 @@ import Link from 'next/link'
 
 export default function FinanceiroPage() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', overflow: 'hidden', margin: 0 }}>
-      <style>{`
-        body { margin: 0 !important; overflow: hidden !important; }
-        html { overflow: hidden; }
-      `}</style>
-
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#050505' }}>
       {/* Top bar */}
       <div style={{
         height: '48px',
         minHeight: '48px',
+        flexShrink: 0,
         background: '#050505',
         borderBottom: '1px solid #222',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 16px',
-        zIndex: 10,
+        zIndex: 9999,
+        position: 'relative',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
@@ -48,10 +45,12 @@ export default function FinanceiroPage() {
         <Link
           href="/"
           style={{
-            fontSize: '10px', fontWeight: 700, letterSpacing: '1px',
-            color: '#aaa', textDecoration: 'none',
-            padding: '5px 10px', borderRadius: '8px',
-            border: '1px solid #333',
+            fontSize: '11px', fontWeight: 700, letterSpacing: '1px',
+            color: '#fff', textDecoration: 'none',
+            padding: '6px 14px', borderRadius: '8px',
+            background: '#1a1a1a',
+            border: '1px solid #444',
+            whiteSpace: 'nowrap',
           }}
         >
           ← MÓDULOS
@@ -62,7 +61,7 @@ export default function FinanceiroPage() {
         src="/financeiro-app"
         title="Financeiro"
         allow="clipboard-read; clipboard-write"
-        style={{ flex: 1, border: 'none', width: '100%', display: 'block', minHeight: 0 }}
+        style={{ flex: 1, border: 'none', width: '100%', display: 'block', minHeight: 0, overflow: 'hidden' }}
       />
     </div>
   )
