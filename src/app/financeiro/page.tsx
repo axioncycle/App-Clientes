@@ -33,7 +33,7 @@ export default function FinanceiroPage() {
       <Link id="ax-back" href="/">← MÓDULOS</Link>
       <iframe
         id="fin-iframe"
-        src="/api/financeiro-proxy"
+        src="/financeiro-app"
         title="Financeiro"
         allow="clipboard-read; clipboard-write"
       />
