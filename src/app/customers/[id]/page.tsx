@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Customer, CustomerSKU, FollowUp } from '@/lib/types'
+import { Customer, CustomerSKU, FollowUp, Tag } from '@/lib/types'
 import CustomerForm from '@/components/CustomerForm'
 import { format, parseISO, differenceInDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
-type FullCustomer = Customer & { customer_skus: CustomerSKU[]; follow_ups: FollowUp[] }
+type FullCustomer = Customer & { customer_skus: CustomerSKU[]; follow_ups: FollowUp[]; tags?: Tag[] }
 
 export default function CustomerDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -25,12 +25,19 @@ export default function CustomerDetailPage() {
     try {
       const { data, error: err } = await supabase
         .from('customers')
-        .select('*, customer_skus(*), follow_ups(*)')
+        .select('*, customer_skus(*), follow_ups(*), customer_tags(tag_id, tags(*))')
         .eq('id', id)
         .single()
 
       if (err) throw err
-      setCustomer(data as FullCustomer)
+      // Flatten tags from nested join
+      type RawCustomer = FullCustomer & { customer_tags?: { tag_id: string; tags: Tag }[] }
+      const raw = data as RawCustomer
+      const normalized: FullCustomer = {
+        ...raw,
+        tags: (raw.customer_tags ?? []).map((ct) => ct.tags).filter(Boolean),
+      }
+      setCustomer(normalized)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Cliente não encontrado')
     } finally {
@@ -270,6 +277,25 @@ export default function CustomerDetailPage() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Tags */}
+          {customer.tags && customer.tags.length > 0 && (
+            <div className="card space-y-3">
+              <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Tags</h2>
+              <div className="flex flex-wrap gap-2">
+                {customer.tags.map((tag) => (
+                  <span
+                    key={tag.id}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+                    style={{ backgroundColor: tag.color + '33', color: tag.color }}
+                  >
+                    <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: tag.color }} />
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
 

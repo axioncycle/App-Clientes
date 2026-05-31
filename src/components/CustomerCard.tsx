@@ -1,10 +1,10 @@
 import Link from 'next/link'
-import { Customer, CustomerSKU } from '@/lib/types'
+import { Customer, CustomerSKU, Tag } from '@/lib/types'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 interface CustomerCardProps {
-  customer: Customer & { customer_skus?: CustomerSKU[] }
+  customer: Customer & { customer_skus?: CustomerSKU[]; tags?: Tag[] }
 }
 
 function formatWhatsAppNumber(phone: string): string | null {
@@ -98,6 +98,20 @@ export default function CustomerCard({ customer }: CustomerCardProps) {
         </div>
       </div>
 
+      {customer.tags && customer.tags.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-slate-700 pt-3">
+          {customer.tags.map((tag) => (
+            <span
+              key={tag.id}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold"
+              style={{ backgroundColor: tag.color + '33', color: tag.color }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
+              {tag.name}
+            </span>
+          ))}
+        </div>
+      )}
       {customer.notes && (
         <p className="mt-3 text-slate-500 text-sm line-clamp-2 border-t border-slate-700 pt-3">
           {customer.notes}

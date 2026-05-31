@@ -3,11 +3,11 @@
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { Customer, CustomerSKU } from '@/lib/types'
+import { Customer, CustomerSKU, Tag } from '@/lib/types'
 import CustomerCard from '@/components/CustomerCard'
 
 type Tab = 'all' | 'interested' | 'purchased'
-type CustomerWithSKUs = Customer & { customer_skus: CustomerSKU[] }
+type CustomerWithSKUs = Customer & { customer_skus: CustomerSKU[]; tags?: Tag[] }
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<CustomerWithSKUs[]>([])
@@ -16,17 +16,30 @@ export default function CustomersPage() {
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('all')
   const [search, setSearch] = useState('')
+  const [allTags, setAllTags] = useState<Tag[]>([])
+  const [tagFilter, setTagFilter] = useState<string>('all')
 
   useEffect(() => {
     async function fetchCustomers() {
       try {
-        const { data, error: err } = await supabase
-          .from('customers')
-          .select('*, customer_skus(*)')
-          .order('created_at', { ascending: false })
+        const [{ data, error: err }, { data: tagsData }] = await Promise.all([
+          supabase
+            .from('customers')
+            .select('*, customer_skus(*), customer_tags(tag_id, tags(*))')
+            .order('created_at', { ascending: false }),
+          supabase.from('tags').select('*').order('name'),
+        ])
 
         if (err) throw err
-        setCustomers((data ?? []) as CustomerWithSKUs[])
+        // Flatten tags from nested join
+        const normalized = ((data ?? []) as (CustomerWithSKUs & {
+          customer_tags?: { tag_id: string; tags: Tag }[]
+        })[]).map((c) => ({
+          ...c,
+          tags: (c.customer_tags ?? []).map((ct) => ct.tags).filter(Boolean),
+        }))
+        setCustomers(normalized as CustomerWithSKUs[])
+        if (tagsData) setAllTags(tagsData as Tag[])
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : 'Erro ao carregar clientes')
       } finally {
@@ -42,6 +55,10 @@ export default function CustomersPage() {
     if (tab === 'interested') result = result.filter((c) => c.status === 'interested')
     if (tab === 'purchased') result = result.filter((c) => c.status === 'purchased')
 
+    if (tagFilter !== 'all') {
+      result = result.filter((c) => c.tags?.some((t) => t.id === tagFilter))
+    }
+
     if (search.trim()) {
       const q = search.toLowerCase()
       result = result.filter((c) => {
@@ -54,7 +71,7 @@ export default function CustomersPage() {
     }
 
     setFiltered(result)
-  }, [customers, tab, search])
+  }, [customers, tab, search, tagFilter])
 
   useEffect(() => {
     applyFilter()
@@ -105,6 +122,38 @@ export default function CustomersPage() {
           </button>
         )}
       </div>
+
+      {/* Tag filter */}
+      {allTags.length > 0 && (
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-slate-400 text-xs font-medium">Tags:</span>
+          <button
+            onClick={() => setTagFilter('all')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+              tagFilter === 'all'
+                ? 'border-[#1a8cff] bg-[#1a8cff]/20 text-[#1a8cff]'
+                : 'border-slate-600 text-slate-400 hover:border-slate-400'
+            }`}
+          >
+            Todas
+          </button>
+          {allTags.map((tag) => (
+            <button
+              key={tag.id}
+              onClick={() => setTagFilter(tagFilter === tag.id ? 'all' : tag.id)}
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border-2 transition-all"
+              style={{
+                backgroundColor: tagFilter === tag.id ? tag.color + '33' : tag.color + '11',
+                color: tag.color,
+                borderColor: tagFilter === tag.id ? tag.color : 'transparent',
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
+              {tag.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-slate-800 border border-slate-700 rounded-xl p-1">

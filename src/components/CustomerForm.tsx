@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Customer, CustomerSKU, CustomerFormData, SKUFormItem } from '@/lib/types'
+import { Customer, CustomerSKU, CustomerFormData, SKUFormItem, Tag } from '@/lib/types'
 import SKUList from './SKUList'
 
 interface CustomerFormProps {
@@ -20,6 +20,7 @@ const emptyForm = (): CustomerFormData => ({
   purchase_date: '',
   notes: '',
   skus: [],
+  tagIds: [],
 })
 
 export default function CustomerForm({ customer, mode }: CustomerFormProps) {
@@ -29,6 +30,7 @@ export default function CustomerForm({ customer, mode }: CustomerFormProps) {
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [allTags, setAllTags] = useState<Tag[]>([])
 
   const initialForm: CustomerFormData = customer
     ? {
@@ -47,10 +49,17 @@ export default function CustomerForm({ customer, mode }: CustomerFormProps) {
           type: s.type,
           unit_price: s.unit_price !== null ? String(s.unit_price) : '',
         })),
+        tagIds: (customer.tags ?? []).map((t) => t.id),
       }
     : emptyForm()
 
   const [form, setForm] = useState<CustomerFormData>(initialForm)
+
+  useEffect(() => {
+    supabase.from('tags').select('*').order('name').then(({ data }) => {
+      if (data) setAllTags(data as Tag[])
+    })
+  }, [])
 
   useEffect(() => {
     if (mode !== 'create') return
@@ -151,6 +160,14 @@ export default function CustomerForm({ customer, mode }: CustomerFormProps) {
 
         const { error: skuErr } = await supabase.from('customer_skus').insert(skuPayload)
         if (skuErr) throw skuErr
+      }
+
+      // Sync tags
+      await supabase.from('customer_tags').delete().eq('customer_id', customerId)
+      if ((form.tagIds ?? []).length > 0) {
+        await supabase.from('customer_tags').insert(
+          (form.tagIds ?? []).map((tid) => ({ customer_id: customerId, tag_id: tid }))
+        )
       }
 
       router.push(`/customers/${customerId}`)
@@ -302,6 +319,54 @@ export default function CustomerForm({ customer, mode }: CustomerFormProps) {
           />
         </div>
       </div>
+
+      {/* Tags */}
+      {allTags.length > 0 && (
+        <div className="card space-y-3">
+          <h2 className="text-base font-semibold text-white border-b border-slate-700 pb-3">
+            Tags
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {allTags.map((tag) => {
+              const selected = ( form.tagIds ?? []).includes(tag.id)
+              return (
+                <button
+                  key={tag.id}
+                  type="button"
+                  onClick={() =>
+                    updateField(
+                      'tagIds',
+                      selected
+                        ? (form.tagIds ?? []).filter((id) => id !== tag.id)
+                        : [...(form.tagIds ?? []), tag.id]
+                    )
+                  }
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border-2 transition-all ${
+                    selected ? 'border-white/40 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
+                  }`}
+                  style={{
+                    backgroundColor: selected ? tag.color + '33' : tag.color + '22',
+                    color: tag.color,
+                    borderColor: selected ? tag.color : 'transparent',
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full inline-block flex-shrink-0"
+                    style={{ backgroundColor: tag.color }}
+                  />
+                  {tag.name}
+                  {selected && <span className="ml-0.5">✓</span>}
+                </button>
+              )
+            })}
+          </div>
+          {form.tagIds.length > 0 && (
+            <p className="text-slate-500 text-xs">
+              {form.tagIds.length} tag{form.tagIds.length !== 1 ? 's' : ''} selecionada{form.tagIds.length !== 1 ? 's' : ''}
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row gap-3 pb-6">

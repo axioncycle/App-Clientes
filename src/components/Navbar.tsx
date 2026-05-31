@@ -7,9 +7,12 @@ import { useState } from 'react'
 const navLinks = [
   { href: '/',          label: 'DASHBOARD', icon: '📊' },
   { href: '/customers', label: 'CLIENTES',  icon: '👥' },
+  { href: '/funil',     label: 'FUNIL',     icon: '🎯' },
   { href: '/importar',  label: 'IMPORTAR',  icon: '📥' },
   { href: '/follow-ups',label: 'FOLLOW-UP', icon: '🔔' },
   { href: '/calendar',  label: 'AGENDA',    icon: '📅' },
+  { href: '/tags',      label: 'TAGS',      icon: '🏷️' },
+  { href: '/exportar',  label: 'EXPORTAR',  icon: '📤' },
 ]
 
 export default function Navbar() {

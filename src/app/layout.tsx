@@ -1,14 +1,25 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import QuickAddModal from '@/components/QuickAddModal'
+import InstallPWA from '@/components/InstallPWA'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Axion Cycle — Gestão de Clientes',
   description: 'Sistema de gerenciamento de clientes Axion Cycle',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Clientes',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#1a8cff',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
         <QuickAddModal />
+        <InstallPWA />
       </body>
     </html>
   )

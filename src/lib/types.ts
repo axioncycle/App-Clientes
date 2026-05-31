@@ -1,5 +1,18 @@
 export type CustomerStatus = 'interested' | 'purchased'
 export type SKUType = 'interest' | 'purchased'
+export type PipelineStage = 'primeiro_contato' | 'negociando' | 'proposta_enviada' | 'fechado' | 'perdido'
+
+export interface Tag {
+  id: string
+  name: string
+  color: string
+  created_at: string
+}
+
+export interface CustomerTag {
+  customer_id: string
+  tag_id: string
+}
 
 export interface Customer {
   id: string
@@ -7,6 +20,7 @@ export interface Customer {
   phone: string | null
   email: string | null
   status: CustomerStatus
+  pipeline_stage?: PipelineStage
   service_date: string | null
   purchase_date: string | null
   notes: string | null
@@ -15,6 +29,7 @@ export interface Customer {
   // joined
   customer_skus?: CustomerSKU[]
   follow_ups?: FollowUp[]
+  tags?: Tag[]
 }
 
 export interface CustomerSKU {
@@ -53,6 +68,7 @@ export interface CustomerFormData {
   purchase_date: string
   notes: string
   skus: SKUFormItem[]
+  tagIds: string[]
 }
 
 export interface SKUFormItem {
