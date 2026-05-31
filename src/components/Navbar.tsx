@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import ThemeToggle from './ThemeToggle'
 
 const navLinks = [
   { href: '/',           label: 'DASHBOARD', icon: '📊' },
@@ -19,7 +20,7 @@ export default function Navbar() {
   const router = useRouter()
 
   return (
-    <nav className="bg-[#111111] border-b border-[#1f1f1f] sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--border)' }}>
       {/* Header row */}
       <div className="flex items-center justify-between px-4 py-3">
         {/* Logo + title */}
@@ -46,9 +47,11 @@ export default function Navbar() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2 flex-shrink-0">
+          <ThemeToggle />
           <button
             onClick={() => router.refresh()}
-            className="w-9 h-9 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center text-gray-400 hover:text-white hover:border-[#3a3a3a] transition-all"
+            className="w-9 h-9 rounded-xl border flex items-center justify-center transition-all"
+            style={{ backgroundColor: 'var(--bg3)', borderColor: 'var(--border2)', color: 'var(--text2)' }}
             title="Atualizar"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +60,8 @@ export default function Navbar() {
           </button>
           <Link
             href="/customers/new"
-            className="w-9 h-9 rounded-xl bg-[#1a8cff] hover:bg-[#3399ff] flex items-center justify-center text-white font-bold text-xl transition-colors"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-xl transition-colors"
+            style={{ backgroundColor: 'var(--blue)' }}
             title="Novo Cliente"
           >
             +
@@ -66,7 +70,7 @@ export default function Navbar() {
       </div>
 
       {/* Tab bar — always visible, horizontal scroll on mobile */}
-      <div className="border-t border-[#1f1f1f] overflow-x-auto scrollbar-hide">
+      <div className="border-t overflow-x-auto scrollbar-hide" style={{ borderColor: 'var(--border)' }}>
         <div className="flex">
           {navLinks.map((link) => {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
