@@ -18,9 +18,9 @@ interface Column {
 
 const COLUMNS: Column[] = [
   {
-    id: 'primeiro_contato',
-    label: 'Primeiro Contato',
-    icon: '👋',
+    id: 'contato_inicial',
+    label: 'Contato Inicial',
+    icon: '☎️',
     color: 'bg-gray-800/60',
     borderColor: 'border-gray-600',
     badgeColor: 'bg-gray-700 text-gray-300',
@@ -28,34 +28,26 @@ const COLUMNS: Column[] = [
   {
     id: 'negociando',
     label: 'Negociando',
-    icon: '🤝',
+    icon: '🚴‍♂️',
     color: 'bg-amber-900/20',
     borderColor: 'border-amber-700/50',
     badgeColor: 'bg-amber-900/50 text-amber-300',
   },
   {
-    id: 'proposta_enviada',
-    label: 'Proposta Enviada',
-    icon: '📋',
+    id: 'separando_envio',
+    label: 'Separando Envio',
+    icon: '🎁',
     color: 'bg-blue-900/20',
     borderColor: 'border-blue-700/50',
     badgeColor: 'bg-blue-900/50 text-blue-300',
   },
   {
-    id: 'fechado',
-    label: 'Fechado',
-    icon: '✅',
+    id: 'enviado',
+    label: 'ENVIADO',
+    icon: '🚀',
     color: 'bg-green-900/20',
     borderColor: 'border-green-700/50',
     badgeColor: 'bg-green-900/50 text-green-300',
-  },
-  {
-    id: 'perdido',
-    label: 'Perdido',
-    icon: '❌',
-    color: 'bg-red-900/20',
-    borderColor: 'border-red-700/50',
-    badgeColor: 'bg-red-900/50 text-red-300',
   },
 ]
 
@@ -148,7 +140,7 @@ export default function FunilPage() {
     )
   }
 
-  const byStage = (stage: PipelineStage) => customers.filter((c) => (c.pipeline_stage ?? 'primeiro_contato') === stage)
+  const byStage = (stage: PipelineStage) => customers.filter((c) => (c.pipeline_stage ?? 'contato_inicial') === stage)
 
   return (
     <div className="space-y-4">

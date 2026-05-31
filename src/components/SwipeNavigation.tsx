@@ -53,8 +53,8 @@ export default function SwipeNavigation({ children }: { children: React.ReactNod
       pullStart.current = null
     }
 
-    // Horizontal swipe to change tab
-    if (Math.abs(dx) > 60 && Math.abs(dy) < 80) {
+    // Horizontal swipe to change tab (disabled on funil to allow kanban drag)
+    if (Math.abs(dx) > 60 && Math.abs(dy) < 80 && !pathname.startsWith('/funil')) {
       const idx = NAV_ORDER.findIndex(p => p === pathname || (p !== '/' && pathname.startsWith(p)))
       if (idx === -1) return
       if (dx < 0 && idx < NAV_ORDER.length - 1) router.push(NAV_ORDER[idx + 1])

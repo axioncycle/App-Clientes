@@ -1,6 +1,6 @@
 export type CustomerStatus = 'interested' | 'purchased'
 export type SKUType = 'interest' | 'purchased'
-export type PipelineStage = 'primeiro_contato' | 'negociando' | 'proposta_enviada' | 'fechado' | 'perdido'
+export type PipelineStage = 'contato_inicial' | 'negociando' | 'separando_envio' | 'enviado'
 
 export interface Tag {
   id: string

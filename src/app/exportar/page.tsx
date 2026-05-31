@@ -8,11 +8,10 @@ import * as XLSX from 'xlsx'
 type CustomerWithSKUs = Customer & { customer_skus: CustomerSKU[] }
 
 const STAGE_LABELS: Record<PipelineStage, string> = {
-  primeiro_contato: 'Primeiro Contato',
-  negociando: 'Negociando',
-  proposta_enviada: 'Proposta Enviada',
-  fechado: 'Fechado',
-  perdido: 'Perdido',
+  contato_inicial: 'Contato Inicial ☎️',
+  negociando: 'Negociando 🚴‍♂️',
+  separando_envio: 'Separando Envio 🎁',
+  enviado: 'ENVIADO 🚀',
 }
 
 export default function ExportarPage() {
@@ -51,7 +50,7 @@ export default function ExportarPage() {
       result = result.filter((c) => c.status === statusFilter)
     }
     if (stageFilter !== 'all') {
-      result = result.filter((c) => (c.pipeline_stage ?? 'primeiro_contato') === stageFilter)
+      result = result.filter((c) => (c.pipeline_stage ?? 'contato_inicial') === stageFilter)
     }
     if (dateFrom) {
       result = result.filter((c) => c.service_date && c.service_date >= dateFrom)
@@ -74,7 +73,7 @@ export default function ExportarPage() {
       Telefone: c.phone ?? '',
       Email: c.email ?? '',
       Status: c.status === 'purchased' ? 'Comprou' : 'Interessado',
-      'Funil (Estágio)': STAGE_LABELS[c.pipeline_stage ?? 'primeiro_contato'],
+      'Funil (Estágio)': STAGE_LABELS[c.pipeline_stage ?? 'contato_inicial'],
       'Data Atendimento': c.service_date ?? '',
       'Data Compra': c.purchase_date ?? '',
       Notas: c.notes ?? '',
@@ -120,7 +119,7 @@ export default function ExportarPage() {
       c.phone ?? '',
       c.email ?? '',
       c.status === 'purchased' ? 'Comprou' : 'Interessado',
-      STAGE_LABELS[c.pipeline_stage ?? 'primeiro_contato'],
+      STAGE_LABELS[c.pipeline_stage ?? 'contato_inicial'],
       c.service_date ?? '',
       c.purchase_date ?? '',
       (c.notes ?? '').replace(/"/g, '""'),
@@ -353,7 +352,7 @@ export default function ExportarPage() {
                         </span>
                       </td>
                       <td className="py-2 px-3 text-slate-400 text-xs">
-                        {STAGE_LABELS[c.pipeline_stage ?? 'primeiro_contato']}
+                        {STAGE_LABELS[c.pipeline_stage ?? 'contato_inicial']}
                       </td>
                       <td className="py-2 px-3 text-slate-400">{c.service_date ?? '—'}</td>
                       <td className="py-2 px-3 text-slate-400">{c.customer_skus?.length ?? 0}</td>
@@ -396,7 +395,7 @@ export default function ExportarPage() {
                 <td>{c.phone ?? ''}</td>
                 <td>{c.email ?? ''}</td>
                 <td>{c.status === 'purchased' ? 'Comprou' : 'Interessado'}</td>
-                <td>{STAGE_LABELS[c.pipeline_stage ?? 'primeiro_contato']}</td>
+                <td>{STAGE_LABELS[c.pipeline_stage ?? 'contato_inicial']}</td>
                 <td>{c.service_date ?? ''}</td>
                 <td>{c.purchase_date ?? ''}</td>
                 <td>{c.customer_skus?.length ?? 0}</td>
