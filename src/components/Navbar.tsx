@@ -17,36 +17,44 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--border)' }}>
-      {/* Back to modules + header row */}
-      <div className="flex items-center justify-between px-4 py-3">
+      {/* Header row — mesmo visual do módulo Financeiro */}
+      <div style={{ height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
         {/* Logo + title */}
-        <Link href="/clientes" className="flex items-center gap-3 flex-shrink-0">
-          <div className="w-11 h-11 rounded-xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center overflow-hidden flex-shrink-0">
+        <Link href="/clientes" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0 }}>
+          <div style={{
+            width: '32px', height: '32px', borderRadius: '10px',
+            background: '#1a1a1a', border: '1px solid #2a2a2a',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden', flexShrink: 0,
+          }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logo.png"
-              alt="Axion Cycle"
-              className="w-full h-full object-contain p-0.5"
+              src="/logo.png" alt="Axion Cycle"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '2px' }}
               onError={(e) => {
-                const t = e.currentTarget
-                t.style.display = 'none'
-                const parent = t.parentElement
-                if (parent) parent.innerHTML = '<span style="font-size:22px">🚲</span>'
+                e.currentTarget.style.display = 'none'
+                const p = e.currentTarget.parentElement
+                if (p) p.innerHTML = '<span style="font-size:16px">👥</span>'
               }}
             />
           </div>
           <div>
-            <p className="font-black text-base text-[#1a8cff] tracking-widest leading-none uppercase">Axion Cycle</p>
-            <p className="text-[10px] text-gray-400 tracking-widest uppercase leading-none mt-0.5">Gestão Integrada</p>
+            <p style={{ fontWeight: 900, fontSize: '13px', color: '#1a8cff', letterSpacing: '2px', textTransform: 'uppercase', lineHeight: 1, margin: 0 }}>Axion Cycle</p>
+            <p style={{ fontSize: '9px', color: '#666', letterSpacing: '2px', textTransform: 'uppercase', lineHeight: 1, marginTop: '3px', marginBottom: 0 }}>Clientes</p>
           </div>
         </Link>
 
         {/* Right actions */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           <Link
             href="/"
-            className="text-[10px] font-bold tracking-wider text-gray-500 hover:text-gray-300 transition-colors px-2 py-1 rounded-lg border border-transparent hover:border-gray-600"
-            title="Módulos"
+            style={{
+              fontSize: '11px', fontWeight: 700, letterSpacing: '1px',
+              color: '#fff', textDecoration: 'none',
+              padding: '6px 14px', borderRadius: '8px',
+              background: '#1a1a1a', border: '1px solid #444',
+              whiteSpace: 'nowrap',
+            }}
           >
             ← MÓDULOS
           </Link>
