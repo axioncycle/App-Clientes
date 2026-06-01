@@ -17,9 +17,8 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: 'var(--nav-bg)', borderColor: 'var(--border)' }}>
-      {/* Header row — mesmo visual do módulo Financeiro */}
+      {/* Header row */}
       <div style={{ height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px' }}>
-        {/* Logo + title */}
         <Link href="/clientes" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', flexShrink: 0 }}>
           <div style={{
             width: '32px', height: '32px', borderRadius: '10px',
@@ -44,7 +43,6 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Right actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
           <Link
             href="/"
@@ -69,14 +67,6 @@ export default function Navbar() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </button>
-          <Link
-            href="/clientes/customers/new"
-            className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-bold text-xl transition-colors"
-            style={{ backgroundColor: 'var(--blue)' }}
-            title="Novo Cliente"
-          >
-            +
-          </Link>
         </div>
       </div>
 
