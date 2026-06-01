@@ -8,6 +8,11 @@ const nextConfig = {
         source: '/financeiro-app',
         destination: 'https://financeiro-ten-kappa.vercel.app/',
       },
+      {
+        // Proxy Vowt API calls from Financeiro SPA
+        source: '/api/vowt',
+        destination: 'https://financeiro-ten-kappa.vercel.app/api/vowt',
+      },
     ]
   },
 }
