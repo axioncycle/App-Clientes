@@ -13,6 +13,10 @@ export const metadata: Metadata = {
     statusBarStyle: 'black-translucent',
     title: 'Axion Cycle',
   },
+  icons: {
+    apple: '/logo.png',
+    icon: '/logo.png',
+  },
 }
 
 export const viewport: Viewport = {
@@ -22,6 +26,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/logo.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/logo.png" />
+      </head>
       <body className={`${inter.className} bg-[#0a0a0a] text-white min-h-screen`}>
         {children}
       </body>
