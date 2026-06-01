@@ -1,5 +1,4 @@
 import Navbar from '@/components/Navbar'
-import InstallPWA from '@/components/InstallPWA'
 import SwipeNavigation from '@/components/SwipeNavigation'
 import FloatingQuickAdd from '@/components/FloatingQuickAdd'
 
@@ -13,7 +12,6 @@ export default function ClientesLayout({ children }: { children: React.ReactNode
         </main>
       </SwipeNavigation>
       <FloatingQuickAdd />
-      <InstallPWA />
     </>
   )
 }

@@ -54,34 +54,35 @@ export default function TagsPage() {
     setDeletingId(null)
   }
 
-  const startEdit = (tag: TagWithCount) => {
-    setEditingId(tag.id)
-    setEditName(tag.name)
-    setEditColor(tag.color)
-  }
-
+  const startEdit = (tag: TagWithCount) => { setEditingId(tag.id); setEditName(tag.name); setEditColor(tag.color) }
   const cancelEdit = () => { setEditingId(null) }
 
   const handleEditSave = async (id: string) => {
     if (!editName.trim()) return
     setEditSaving(true)
-    const { error: err } = await supabase
-      .from('tags')
-      .update({ name: editName.trim(), color: editColor })
-      .eq('id', id)
+    const { error: err } = await supabase.from('tags').update({ name: editName.trim(), color: editColor }).eq('id', id)
     if (err) {
       setError(`${err.message} (${err.code})`)
     } else {
-      setTags((prev) => prev.map((t) =>
-        t.id === id ? { ...t, name: editName.trim(), color: editColor } : t
-      ))
+      setTags((prev) => prev.map((t) => t.id === id ? { ...t, name: editName.trim(), color: editColor } : t))
       cancelEdit()
     }
     setEditSaving(false)
   }
 
+  const btnSave: React.CSSProperties = {
+    background: '#1a8cff', color: '#fff', border: 'none',
+    borderRadius: '10px', padding: '10px 20px',
+    fontWeight: 700, fontSize: '14px', cursor: 'pointer',
+  }
+  const btnCancel: React.CSSProperties = {
+    background: '#1a1a1a', color: '#aaa', border: '1px solid #333',
+    borderRadius: '10px', padding: '10px 20px',
+    fontWeight: 700, fontSize: '14px', cursor: 'pointer',
+  }
+
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6" style={{ paddingBottom: '80px' }}>
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-2"><span>🏷️</span> Tags</h1>
         <p className="text-slate-400 text-sm mt-1">Organize seus clientes com etiquetas coloridas</p>
@@ -130,10 +131,7 @@ export default function TagsPage() {
                   <div className="p-4 bg-[#0a0a0a] border border-[#1a8cff]/40 rounded-xl space-y-3">
                     <div>
                       <label className="label">Nome</label>
-                      <input
-                        type="text" value={editName} onChange={(e) => setEditName(e.target.value)}
-                        className="input" maxLength={40} autoFocus
-                      />
+                      <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="input" maxLength={40} autoFocus />
                     </div>
                     <div>
                       <label className="label">Cor</label>
@@ -150,11 +148,16 @@ export default function TagsPage() {
                       </div>
                     </div>
                     <p className="text-slate-500 text-xs">Alteração aplicada em todos os {tag.count} cliente(s) com esta tag.</p>
-                    <div className="flex gap-2">
-                      <button onClick={() => handleEditSave(tag.id)} disabled={editSaving || !editName.trim()} className="btn-primary text-xs px-4 py-2">
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleEditSave(tag.id)}
+                        disabled={editSaving || !editName.trim()}
+                        style={{ ...btnSave, opacity: editSaving || !editName.trim() ? 0.5 : 1 }}
+                      >
                         {editSaving ? 'Salvando...' : 'Salvar'}
                       </button>
-                      <button onClick={cancelEdit} className="btn-secondary text-xs px-4 py-2">Cancelar</button>
+                      <button type="button" onClick={cancelEdit} style={btnCancel}>Cancelar</button>
                     </div>
                   </div>
                 ) : (
