@@ -25,7 +25,13 @@ export async function POST(req: NextRequest) {
     if (body) fetchOpts.body = typeof body === 'string' ? body : JSON.stringify(body)
 
     const response = await fetch(url, fetchOpts)
-    const data = await response.json().catch(() => ({ error: 'Resposta inválida' }))
+    const rawText = await response.text()
+    let data: unknown
+    try {
+      data = JSON.parse(rawText)
+    } catch {
+      data = { error: 'Resposta não-JSON do servidor', raw: rawText.slice(0, 500), status: response.status }
+    }
 
     return NextResponse.json(data, { status: response.status, headers: CORS })
   } catch (e) {
