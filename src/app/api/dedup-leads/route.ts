@@ -1,11 +1,24 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 export const runtime = 'nodejs'
 
-export async function GET() {
+export async function POST(req: NextRequest) {
+  const secret = process.env.ADMIN_API_SECRET
+  if (!secret) {
+    return NextResponse.json({ error: 'ADMIN_API_SECRET não configurado' }, { status: 503 })
+  }
+  const auth = req.headers.get('authorization')
+  const token = auth?.replace(/^Bearer\s+/i, '') || req.nextUrl.searchParams.get('token')
+  if (token !== secret) {
+    return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!serviceKey) {
+    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY não configurada' }, { status: 503 })
+  }
   const supabase = createClient(supabaseUrl, serviceKey)
 
   // Fetch all customers with phone
