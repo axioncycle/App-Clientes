@@ -2,22 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge'
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, Store, Accept',
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS })
-}
-
+// Proxy same-origin para a API Vowt (evita CORS no browser).
+// Sem headers CORS: só aceita chamadas da própria origem.
 export async function POST(req: NextRequest) {
   try {
     const { url, method = 'GET', headers = {}, body } = await req.json()
 
     if (!url || !url.startsWith('https://api.vowtecommerce.com.br/')) {
-      return NextResponse.json({ error: 'URL inválida' }, { status: 400, headers: CORS })
+      return NextResponse.json({ error: 'URL inválida' }, { status: 400 })
     }
 
     const fetchOpts: RequestInit = {
@@ -35,8 +27,8 @@ export async function POST(req: NextRequest) {
       data = { error: 'Resposta não-JSON do servidor', raw: rawText.slice(0, 500), status: response.status }
     }
 
-    return NextResponse.json(data, { status: response.status, headers: CORS })
+    return NextResponse.json(data, { status: response.status })
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500, headers: CORS })
+    return NextResponse.json({ error: String(e) }, { status: 500 })
   }
 }

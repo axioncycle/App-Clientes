@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
 
 // Parse message like:
 // "novo cliente: Nome: João Silva | Telefone: 11999998888 | SKU: BIKE-001 | Observação: Interessado na bike azul"
@@ -22,6 +24,15 @@ function parseMessage(text: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const secret = process.env.WHATSAPP_WEBHOOK_SECRET
+  if (!secret) {
+    return NextResponse.json({ ok: false, error: 'WHATSAPP_WEBHOOK_SECRET não configurado' }, { status: 503 })
+  }
+  const token = req.nextUrl.searchParams.get('token') || req.headers.get('x-webhook-token')
+  if (token !== secret) {
+    return NextResponse.json({ ok: false, error: 'Não autorizado' }, { status: 401 })
+  }
+
   try {
     const body = await req.json()
 
@@ -34,6 +45,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, reason: 'message not recognized' })
     }
 
+    const supabase = getSupabase()
     const { data: customer, error } = await supabase
       .from('customers')
       .insert({
