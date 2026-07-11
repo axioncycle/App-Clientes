@@ -7,6 +7,10 @@ const nextConfig = {
         source: '/financeiro-app',
         destination: 'https://financeiro-ten-kappa.vercel.app/',
       },
+      {
+        source: '/pessoal-app',
+        destination: 'https://financeiro-ten-kappa.vercel.app/pessoal.html',
+      },
     ]
   },
 }

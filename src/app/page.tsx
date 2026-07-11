@@ -48,6 +48,17 @@ export default function ModuleSelector() {
           <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)' }}>Clientes</div>
           <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 4 }}>CRM, funil, follow-ups</div>
         </button>
+        <button
+          onClick={() => router.push('/pessoal')}
+          className="card"
+          style={{ padding: '2.5rem 1.5rem', cursor: 'pointer', border: '2px solid #a855f7', textAlign: 'center', borderRadius: 20, background: 'var(--bg2)', transition: 'all 0.2s' }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(168,85,247,0.1)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg2)')}
+        >
+          <div style={{ fontSize: 48, marginBottom: 12 }}>👤</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)' }}>Pessoal</div>
+          <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 4 }}>Patrimônio, cofrinhos, gastos</div>
+        </button>
       </div>
       <button
         onClick={handleLogout}
