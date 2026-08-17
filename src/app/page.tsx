@@ -13,7 +13,19 @@ export default function ModuleSelector() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', padding: '1.5rem' }}>
+    <div style={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem',
+      backgroundColor: '#08080c',
+      backgroundImage: [
+        'radial-gradient(1100px 620px at 12% 8%, rgba(201,162,39,0.13), transparent 60%)',
+        'radial-gradient(900px 520px at 92% 88%, rgba(201,162,39,0.10), transparent 55%)',
+        'linear-gradient(118deg, transparent 38%, rgba(212,175,55,0.07) 46%, transparent 51%)',
+        'linear-gradient(118deg, transparent 60%, rgba(212,175,55,0.055) 66%, transparent 71%)',
+        'linear-gradient(118deg, transparent 78%, rgba(212,175,55,0.045) 83%, transparent 88%)',
+        'radial-gradient(1400px 900px at 50% 120%, rgba(0,0,0,0.55), transparent 60%)',
+      ].join(', '),
+      backgroundAttachment: 'fixed',
+    }}>
       <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
